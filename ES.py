@@ -7,7 +7,7 @@ crossover_probability = 0.4
 mutation_probability = .02
 
 def get_best_gene(chromosome, input_dots):
-    fitness_vector = chromosome.evaluate(chromosome, input_dots)
+    fitness_vector = chromosome.evaluate(input_dots)
     # first we combine fitness and gene vector (a,b)
     fitness_gene = []
     for i in range(len(chromosome.genes)):
