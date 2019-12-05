@@ -5,11 +5,12 @@ class Chromosome:
     MIN = 0
     MAX = 10
     def __init__(self, chromosome_length, min, max):
+        self.BEST_FITNESS = 0
         self.GENESNUMBER = chromosome_length
         self.MIN = min
         self.MAX = max
         # gene[0] = a and gene[1] = b
-        self.genes = [[random.randint(self.MIN,self.MAX), random.randint(self.MIN,self.MAX)] for i in range(self.GENESNUMBER)]
+        self.genes = [[float(random.randint(self.MIN*100,self.MAX*100)/100), float(random.randint(self.MIN*100,self.MAX*100)/100)] for i in range(self.GENESNUMBER)]
         self.score = [0 for i in range(self.GENESNUMBER)]
 
     def evaluate(self, input_dots):
@@ -19,5 +20,7 @@ class Chromosome:
             for input_dot in input_dots:
                 gene_output.append(input_dot[0]*gene[0] + input_dot[1]*gene[1])
             # use standard deviation as fitness
+            #print(gene, "  ", np.std(gene_output))
             fitness_vector.append(np.std(gene_output))
+        #print()
         return fitness_vector
