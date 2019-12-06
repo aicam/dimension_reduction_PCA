@@ -4,7 +4,7 @@ Mu = 40
 # Todo change Mu's coefficient below to attain the best result
 Lambda = 1*Mu
 crossover_probability = 0.4
-mutation_probability = .1
+mutation_probability = .8
 def get_best_gene(chromosome, input_dots):
     fitness_vector = chromosome.evaluate(input_dots)
     # first we combine fitness and gene vector (a,b)
@@ -14,17 +14,18 @@ def get_best_gene(chromosome, input_dots):
     fitness_gene_sorted = sorted(fitness_gene, key=lambda i: i['fitness'], reverse=True)
     return fitness_gene_sorted[0]["gene"][0],fitness_gene_sorted[0]["gene"][1]
 
-def process_genes(chromosome, input_dots, sigma, remove_rate):
+def process_genes(chromosome, input_dots, sigma, remove_rate,fitness_array):
     fitness_vector = chromosome.evaluate(input_dots)
     # first we combine fitness and gene vector (a,b)
     fitness_gene = []
     for i in range(len(chromosome.genes)) :
         fitness_gene.append({"fitness": fitness_vector[i], "gene": chromosome.genes[i], "index": i})
     fitness_gene_sorted = sorted(fitness_gene, key= lambda i: i['fitness'], reverse=True)
+    new_growth = find_grow_rate(fitness_array, fitness_gene_sorted[0]['fitness'])
     parent_genes = []
     if fitness_gene_sorted[0]["fitness"] > chromosome.BEST_FITNESS:
         chromosome.BEST_FITNESS = fitness_gene_sorted[0]["fitness"]
-        print(chromosome.BEST_FITNESS)
+        #print(chromosome.BEST_FITNESS)
     # we choose parents by a chance
     parents_counter = 0
     i = 0
@@ -49,4 +50,11 @@ def process_genes(chromosome, input_dots, sigma, remove_rate):
     # remove bad genes
     for i in range(1,remove_rate + 1):
         del chromosome.genes[fitness_gene_sorted[len(fitness_gene_sorted) - i]["index"]]
-    return chromosome
+    return chromosome, new_growth
+
+def find_grow_rate(fitness_array,current_fitness):
+    if len(fitness_array) < 1:
+        fitness_array.append(current_fitness/10)
+        return fitness_array
+    fitness_array.append(current_fitness)# / (fitness_array[len(fitness_array) - 1]))
+    return fitness_array
